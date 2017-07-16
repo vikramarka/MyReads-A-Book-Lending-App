@@ -8,12 +8,15 @@ class MyReads extends Component{
   }
   render(){
     const books = this.props.books;
+    const shelfCategories = this.props.shelfCategories;
     return(
       <div>
         <Header />
-        <Shelf title="Currently Reading" books={this.getBooksForShelf(books,"currentlyReading")}/>
-        <Shelf title="Want to Read" books={this.getBooksForShelf(books,"wantToRead")}/>
-        <Shelf title="Read" books={this.getBooksForShelf(books,"read")}/>
+        {
+          shelfCategories.map((shelfCategory)=>(
+            <Shelf categories={shelfCategories} title={shelfCategory.title} key={shelfCategory.title} onChangeBookShelf={this.props.onChangeBookShelf} books={this.getBooksForShelf(books,shelfCategory.key)}/>
+          ))
+        }
       </div>
     )
   }
