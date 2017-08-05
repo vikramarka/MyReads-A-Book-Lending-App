@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import MyReads from './MyReads';
+import BookSearch from './BookSearch';
+import {Route} from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 import './App.css';
 
 class App extends Component {
 
   state = {
-    books: []
+    books: [],
+    loaded:false
   }
 
   shelfCategories = [
@@ -26,27 +29,38 @@ class App extends Component {
 
   componentDidMount(){
     BooksAPI.getAll().then((books)=>{
-      this.setState({books});
+      this.setState({books:books,loaded:true});
     });
   }
 
   render() {
     return (
       <div className="App">
-        <MyReads books={this.state.books} shelfCategories={this.shelfCategories} onChangeBookShelf={(book,shelf)=>{this.onChangeBookShelf(book,shelf)}}/>
+        <Route exact path="/" render={()=>(
+          <MyReads loaded={this.state.loaded} books={this.state.books} shelfCategories={this.shelfCategories} onChangeBookShelf={(book,shelf)=>{this.onChangeBookShelf(book,shelf)}}/>
+        )}/>
+        <Route exact path="/search" render={()=>(
+          <BookSearch categories={this.shelfCategories} books={this.state.books} onChangeBookShelf={(book,shelf)=>{this.onChangeBookShelf(book,shelf)}}/>
+        )}/>
       </div>
     );
   }
   onChangeBookShelf(book,shelf){
     BooksAPI.update(book,shelf);
     this.setState((state)=>{
+      let newBook = true;
       state.books.map((stbook)=>{
         if(stbook.id===book.id){
+          newBook = false;
           stbook.shelf = shelf;
           return 0;
         }
         return 0;
-      })
+      });
+      if(newBook){
+        book.shelf = shelf;
+        state.books.push(book);
+      }
     })
   }
 }

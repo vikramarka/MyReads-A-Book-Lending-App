@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-
+import NoCover from "../icons/BookNotPictured.jpg";
 
 class Book extends Component{
   
@@ -8,7 +8,7 @@ class Book extends Component{
     return (
       <div className="book">
         <div className="book-top">
-          <img className="book-cover" src={book.imageLinks.thumbnail} alt="Book"/>
+          <img className="book-cover" src={(book.imageLinks)?book.imageLinks.thumbnail:NoCover} alt="Book"/>
           <div className="book-shelf-changer">
             <select onChange={(e)=>{this.changeHandler(e)}} value={book.shelf}>
               {this.props.categories.map((option)=>(
@@ -18,7 +18,9 @@ class Book extends Component{
           </div>
         </div>
         <div className="book-title"><strong>{book.title}</strong></div>
-        <div className="book-authors">{book.authors.join(", ")}</div>
+        {book.authors && (
+          <div className="book-authors">{book.authors.join(", ")}</div>
+        )}
       </div>
     )
   }

@@ -11,6 +11,17 @@ class Shelf extends Component{
         </div>
         <div className="bookshelf-books">
         <ol className="books-grid">
+          {!this.props.loaded ? (
+              <h2>
+                Loading...
+              </h2>
+            ):
+            (
+              books.length===0 && <h2>
+                No books in this shelf.
+              </h2>
+            )  
+          }
           {books.map((book)=>(
               <li key={book.id}>
                 <Book book={book} categories={this.props.categories} onChange={this.props.onChangeBookShelf}/>
